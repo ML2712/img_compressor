@@ -6,15 +6,6 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 def gallery(request):
-    # category = request.GET.get('category')
-
-    # if category == None:
-    #     photos = Photo.objects.all()
-    # else:
-    #     photos = Photo.objects.filter(category__name__contains=category)
-
-    # categories = Category.objects.all()
-    # context = {'categories': categories, 'photos': photos}
     photos = Photo.objects.all()
     context = {'photos': photos}
     return render(request, 'photos/gallery.html', context)
@@ -26,21 +17,11 @@ def viewPhoto(request, pk):
 
 
 def addPhoto(request):
-    # categories = Category.objects.all()
-
     if request.method == 'POST':
         data = request.POST
         image = request.FILES.get('image')
 
-        # if data['category'] != 'none':
-        #     category = Category.objects.get(id=data['category'])
-        # elif data['category_new'] != '':
-        #     category, created = Category.objects.get_or_create(
-        #         name=data['category_new'])
-        # else:
-        #     category = None
-
-        # compress the image here and then save it
+        # compress the image and then save it
         i = Image.open(image)
         i = i.convert('RGB')
         thumb_io = BytesIO()
@@ -50,12 +31,9 @@ def addPhoto(request):
             thumb_io, None, 'foo.jpg', 'image/jpeg', thumb_io.tell(), None)
 
         photo = Photo.objects.create(
-            # category=category,
             description=data['description'],
-            # image=image,
             image=inmemory_uploaded_file
         )
         return redirect('gallery')
 
-    # context = {'categories': categories}
     return render(request, 'photos/add.html')
